@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
@@ -10,9 +11,18 @@ import { SearchBar } from "@/components/events/SearchBar";
 import { Separator } from "@/components/ui/separator";
 
 export default function EventsPage() {
+  const searchParams = useSearchParams();
   const [selectedCategory, setSelectedCategory] =
     useState<Id<"categories"> | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Handle URL parameters for category filtering
+  useEffect(() => {
+    const categoryParam = searchParams.get('category');
+    if (categoryParam) {
+      setSelectedCategory(categoryParam as Id<"categories">);
+    }
+  }, [searchParams]);
 
   // Fetch data
   const categories = useQuery(api.categories.getAllCategories);

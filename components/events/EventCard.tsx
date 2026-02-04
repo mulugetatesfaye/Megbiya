@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { MapPin, ArrowRight } from "lucide-react";
+import { useState } from "react";
+import { MapPin, ArrowRight, ImageIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { EventWithDetails } from "@/types";
@@ -13,8 +14,12 @@ interface EventCardProps {
 }
 
 export function EventCard({ event }: EventCardProps) {
+  const [imageError, setImageError] = useState(false);
   const formatPrice = (cents: number) =>
-    cents === 0 ? "Free" : `$${(cents / 100).toFixed(0)}`;
+    cents === 0 ? "Free" : new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "ETB",
+    }).format(cents / 100);
 
   const isFree = event.priceRange.min === 0 && event.priceRange.max === 0;
 
@@ -35,13 +40,25 @@ export function EventCard({ event }: EventCardProps) {
     >
       {/* Image */}
       <div className="relative h-36 w-full overflow-hidden bg-muted">
-        <Image
-          src={event.coverImageUrl}
-          alt={event.title}
-          fill
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
-          sizes="(max-width: 768px) 100vw, 25vw"
-        />
+        {!imageError ? (
+          <Image
+            src={event.coverImageUrl}
+            alt={event.title}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            sizes="(max-width: 768px) 100vw, 25vw"
+            onError={() => setImageError(true)}
+          />
+        ) : (
+          <div className="flex items-center justify-center w-full h-full bg-gradient-to-br from-muted to-muted/50">
+            <div className="text-center space-y-2">
+              <ImageIcon className="h-8 w-8 text-muted-foreground/50 mx-auto" />
+              <p className="text-xs text-muted-foreground/70 font-medium">
+                {event.category?.name || "Event"}
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Status */}
         <div className="absolute left-2 top-2 flex gap-1">

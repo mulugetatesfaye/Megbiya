@@ -66,6 +66,18 @@ export default defineSchema({
     minOrder: v.number(), // Min tickets per order (default 1)
     maxOrder: v.number(), // Max tickets per order (e.g., 10)
 
+    // Admin Approval
+          approvalStatus: v.optional(
+            v.union(
+              v.literal("pending"),
+              v.literal("approved"),
+              v.literal("rejected")
+            )
+          ), // Approval workflow for admins
+    approvalNotes: v.optional(v.string()), // Admin notes for approval/rejection
+    reviewedBy: v.optional(v.id("users")), // Admin who reviewed the event
+    reviewedAt: v.optional(v.number()), // When it was reviewed
+
     // Metadata
     tags: v.optional(v.array(v.string())),
     createdAt: v.number(),
@@ -89,7 +101,7 @@ export default defineSchema({
 
     // Pricing
     price: v.number(), // In cents (0 for free)
-    currency: v.string(), // e.g., "USD"
+    currency: v.string(), // e.g., "ETB"
 
     // Availability
     totalQuantity: v.number(), // Total tickets available for this tier

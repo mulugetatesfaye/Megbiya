@@ -11,8 +11,11 @@
 import type * as categories from "../categories.js";
 import type * as events from "../events.js";
 import type * as http from "../http.js";
+import type * as lib_requireOrganizer from "../lib/requireOrganizer.js";
+import type * as lib_slugify from "../lib/slugify.js";
 import type * as orders from "../orders.js";
 import type * as seed from "../seed.js";
+import type * as tickets from "../tickets.js";
 import type * as users from "../users.js";
 import type * as waitlist from "../waitlist.js";
 
@@ -26,8 +29,11 @@ declare const fullApi: ApiFromModules<{
   categories: typeof categories;
   events: typeof events;
   http: typeof http;
+  "lib/requireOrganizer": typeof lib_requireOrganizer;
+  "lib/slugify": typeof lib_slugify;
   orders: typeof orders;
   seed: typeof seed;
+  tickets: typeof tickets;
   users: typeof users;
   waitlist: typeof waitlist;
 }>;
