@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -10,7 +10,16 @@ import { EventFilters } from "@/components/events/EventFilters";
 import { SearchBar } from "@/components/events/SearchBar";
 import { Separator } from "@/components/ui/separator";
 
+// Wrapper page with Suspense boundary to satisfy Next.js CSR bailout requirements
 export default function EventsPage() {
+  return (
+    <Suspense fallback={<div className="container py-8">Loading events...</div>}>
+      <EventsPageInner />
+    </Suspense>
+  );
+}
+
+function EventsPageInner() {
   const searchParams = useSearchParams();
   const [selectedCategory, setSelectedCategory] =
     useState<Id<"categories"> | null>(null);
@@ -18,7 +27,7 @@ export default function EventsPage() {
 
   // Handle URL parameters for category filtering
   useEffect(() => {
-    const categoryParam = searchParams.get('category');
+    const categoryParam = searchParams.get("category");
     if (categoryParam) {
       setSelectedCategory(categoryParam as Id<"categories">);
     }
@@ -37,8 +46,8 @@ export default function EventsPage() {
     <div className="container py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">Discover Events</h1>
-        <p className="text-muted-foreground text-lg">
+        <h1 className="mb-2 text-4xl font-bold">Discover Events</h1>
+        <p className="text-lg text-muted-foreground">
           Find and book tickets to amazing events near you
         </p>
       </div>
